@@ -30,14 +30,14 @@ internal class RenderSystem
     // Get the Sun's radius on screen (in pixels)
     private static float GetSunRadius(Astro sun, double radiusScale)
     {
-        float radioSol = (float)(sun.Radius / radiusScale);
+        float sunRadius = (float)(sun.Radius / radiusScale);
 
         // Set conditions for the maximum and minimum size of the Sun.
-        return radioSol switch
+        return sunRadius switch
         {
             < RenderConstants.MinBodyRadius => RenderConstants.MinBodyRadius,
             > RenderConstants.MaxBodyRadius => RenderConstants.MaxBodyRadius,
-            _ => radioSol,
+            _ => sunRadius,
         };
     }
 
@@ -185,23 +185,23 @@ internal class RenderSystem
 
     private static void DrawAstro(Astro astro, Vector2 screenPos, Camera camera, int textAlign)
     {
-        float radio = (float)(astro.Radius / camera.RadiusScale);
+        float bodyRadius = (float)(astro.Radius / camera.RadiusScale);
 
-        if (radio < RenderConstants.MinBodyRadius)
+        if (bodyRadius < RenderConstants.MinBodyRadius)
         {
-            radio = RenderConstants.MinBodyRadius;
+            bodyRadius = RenderConstants.MinBodyRadius;
         }
 
-        if (radio > RenderConstants.MaxBodyRadius)
+        if (bodyRadius > RenderConstants.MaxBodyRadius)
         {
-            radio = RenderConstants.MaxBodyRadius;
+            bodyRadius = RenderConstants.MaxBodyRadius;
         }
 
         // Draw the trail only if there are two or more positions
         if (astro.Trail.Count > 1)
             DrawTrail(astro, camera);
 
-        Raylib.DrawCircleV(center: screenPos, radius: radio, color: astro.Color);
+        Raylib.DrawCircleV(center: screenPos, radius: bodyRadius, color: astro.Color);
 
         // Optional: Draw the body's name near the triangle
         Raylib.DrawText(
@@ -327,15 +327,15 @@ internal class RenderSystem
             double angle = rnd.NextDouble() * 2 * Math.PI;
             double objRadius = kuiperBeltInner + (rnd.NextDouble() * (kuiperBeltOuter - kuiperBeltInner));
 
-            float xObjeto = sunPosScreen.X + (float)(Math.Cos(angle) * objRadius);
-            float yObjeto = sunPosScreen.Y + (float)(Math.Sin(angle) * objRadius);
+            float xObj = sunPosScreen.X + (float)(Math.Cos(angle) * objRadius);
+            float yObj = sunPosScreen.Y + (float)(Math.Sin(angle) * objRadius);
 
             // Only draw if inside the screen
-            if (!(xObjeto >= 0) || !(xObjeto <= camera.Width) || !(yObjeto >= 0) || !(yObjeto <= camera.Height))
+            if (!(xObj >= 0) || !(xObj <= camera.Width) || !(yObj >= 0) || !(yObj <= camera.Height))
                 continue;
 
             float size = 1.0f + ((float)rnd.NextDouble() * 1.5f);
-            Raylib.DrawCircleV(new Vector2(xObjeto, yObjeto), size, RenderConstants.KuiperObjectColor);
+            Raylib.DrawCircleV(new Vector2(xObj, yObj), size, RenderConstants.KuiperObjectColor);
         }
 
         // Text inside the ring, between the Sun and the inner edge
@@ -355,35 +355,35 @@ internal class RenderSystem
         double distCamAstro = Vector2D.Distance(camera.Position, selectedAstro.Position);
         bool fixedObj = distCamAstro < 1e7;
 
-        Color colorCruz;
+        Color crossColor;
         // Get the center of the screen
         Vector2 center = camera.Center;
 
         if (fixedObj)
         {
             // Smooth oscillation (Sine gives values between -1 and 1)
-            float oscilacion = (float)Math.Sin(Raylib.GetTime() * RenderConstants.CrossPulseSpeed);
-            float expansion = oscilacion * RenderConstants.CrossExpansionAmplitude;
-            float ladoFinal = crossSide + expansion;
+            float oscillation = (float)Math.Sin(Raylib.GetTime() * RenderConstants.CrossPulseSpeed);
+            float expansion = oscillation * RenderConstants.CrossExpansionAmplitude;
+            float finalSide = crossSide + expansion;
 
             // 2. Convert range [-1, 1] to [0.2, 1.0] so it never fully disappears
-            float factorOpacidad = (oscilacion * 0.4f) + 0.6f;
+            float opacityFactor = (oscillation * 0.4f) + 0.6f;
 
             // 3. Apply opacity to the body's original color
-            colorCruz = new Color(
+            crossColor = new Color(
                 Color.DarkGray.R,
                 Color.DarkGray.G,
                 Color.DarkGray.B,
-                a: (byte)(factorOpacidad * 255)
+                a: (byte)(opacityFactor * 255)
             );
-            Raylib.DrawLineV(center + new Vector2(ladoFinal, 0), center + new Vector2(-ladoFinal, 0), colorCruz);
-            Raylib.DrawLineV(center + new Vector2(0, ladoFinal), center + new Vector2(0, -ladoFinal), colorCruz);
+            Raylib.DrawLineV(center + new Vector2(finalSide, 0), center + new Vector2(-finalSide, 0), crossColor);
+            Raylib.DrawLineV(center + new Vector2(0, finalSide), center + new Vector2(0, -finalSide), crossColor);
         }
         else
         {
-            colorCruz = Color.DarkGray;
-            Raylib.DrawLineV(center + new Vector2(crossSide, 0), center + new Vector2(-crossSide, 0), colorCruz);
-            Raylib.DrawLineV(center + new Vector2(0, crossSide), center + new Vector2(0, -crossSide), colorCruz);
+            crossColor = Color.DarkGray;
+            Raylib.DrawLineV(center + new Vector2(crossSide, 0), center + new Vector2(-crossSide, 0), crossColor);
+            Raylib.DrawLineV(center + new Vector2(0, crossSide), center + new Vector2(0, -crossSide), crossColor);
         }
     }
 
@@ -415,7 +415,7 @@ internal class RenderSystem
             }
 
             // Transform from world coordinates to screen coordinates
-            Vector2 posPantalla = camera.WorldToScreen(star.Position);
+            Vector2 screenPos = camera.WorldToScreen(star.Position);
 
             byte brightness = (byte)(star.Brightness * 255);
             Rlgl.Color4ub(brightness, brightness, brightness, 255);
@@ -423,10 +423,10 @@ internal class RenderSystem
             float r = star.Size;
 
             // Draw a Quad (square) centered at the position
-            Rlgl.Vertex2f(posPantalla.X - r, posPantalla.Y - r);
-            Rlgl.Vertex2f(posPantalla.X - r, posPantalla.Y + r);
-            Rlgl.Vertex2f(posPantalla.X + r, posPantalla.Y + r);
-            Rlgl.Vertex2f(posPantalla.X + r, posPantalla.Y - r);
+            Rlgl.Vertex2f(screenPos.X - r, screenPos.Y - r);
+            Rlgl.Vertex2f(screenPos.X - r, screenPos.Y + r);
+            Rlgl.Vertex2f(screenPos.X + r, screenPos.Y + r);
+            Rlgl.Vertex2f(screenPos.X + r, screenPos.Y - r);
         }
 
         Rlgl.End();
@@ -552,7 +552,7 @@ internal class RenderSystem
             color: Color.White);
 
         // Title
-        const string title = "Controles del Simulador";
+        const string title = "Simulator Controls";
         int titleWidth = Raylib.MeasureText(title, 20);
         int posXCentered = (camera.Width - titleWidth) / 2 ;
 

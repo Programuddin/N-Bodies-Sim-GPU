@@ -52,25 +52,25 @@ internal class DataLoader
                 }
 
                 if (data.Mass < 0.0001)
-                    throw new Exception($"La masa del cuerpo {data.Name} es negativa: {data.Mass}");
+                    throw new Exception($"Mass of body {data.Name} is negative: {data.Mass}");
 
                 if (data.Radius < 0.0001)
-                    throw new Exception($"El radio del cuerpo {data.Name} es negativo: {data.Radius}");
+                    throw new Exception($"Radius of body {data.Name} is negative: {data.Radius}");
 
                 if (data.Position.Length != 2)
                 {
                     throw new Exception(
-                        $"Los datos de la posición del cuerpo {data.Name} no son correctos: {data.Position}");
+                        $"Position data of body {data.Name} is invalid: {data.Position}");
                 }
 
                 if (data.Velocity.Length != 2)
                 {
                     throw new Exception(
-                        $"Los datos de la velocidad del cuerpo {data.Name} no son correctos: {data.Velocity}");
+                        $"Velocity data of body {data.Name} is invalid: {data.Velocity}");
                 }
 
                 if (data.Color.Length != 4)
-                    throw new Exception($"Los datos de color del cuerpo {data.Name} no son correctos: {data.Color}");
+                    throw new Exception($"Color data of body {data.Name} is invalid: {data.Color}");
 
                 const int colorLength = 4;
 
@@ -79,7 +79,7 @@ internal class DataLoader
                     if (data.Color[i] is < 0 or > 255)
                     {
                         throw new Exception(
-                            $"Los valores (r, g, b, a) del cuerpo {data.Name} no son correctos: {data.Color}");
+                            $"Color values (r, g, b, a) of body {data.Name} are invalid: {data.Color}");
                     }
                 }
 
@@ -91,27 +91,27 @@ internal class DataLoader
                     if (data.InnerRingRadius < 0 || data.OuterRingRadius < 0)
                     {
                         throw new Exception(
-                            $"Los datos de los radios de los anillos del cuerpo {data.Name} no son correctos:" +
+                            $"Ring radius data of body {data.Name} is invalid:" +
                             $" InnerRadius = {data.InnerRingRadius}, OuterRadius = {data.OuterRingRadius}");
                     }
 
                     if (data.InnerRingRadius > data.OuterRingRadius)
                     {
                         throw new Exception(
-                            $"Los datos de los radios de los anillos del cuerpo {data.Name} no son correctos. " +
+                            $"Ring radius data of body {data.Name} is invalid. " +
                             $"{data.InnerRingRadius} > {data.OuterRingRadius}");
                     }
 
                     if (data.RingColor == null)
                     {
                         throw new Exception(
-                            $"El cuerpo {data.Name} no tiene el color de sus anillos: {data.RingColor}");
+                            $"Body {data.Name} has rings but no ring color defined: {data.RingColor}");
                     }
 
                     if (data.RingColor.Length != 4)
                     {
                         throw new Exception(
-                            $"Los datos de color de los anillos del cuerpo {data.Name} no son correctos: {data.RingColor}");
+                            $"Ring color data of body {data.Name} is invalid: {data.RingColor}");
                     }
 
                     for (int i = 0; i < colorLength; i++)
@@ -119,7 +119,7 @@ internal class DataLoader
                         if (data.RingColor[i] is < 0 or > 255)
                         {
                             throw new Exception(
-                                $"Los valores (r, g, b, a) de los anillos del cuerpo {data.Name} no son correctos: {data.RingColor}");
+                                $"Ring color values (r, g, b, a) of body {data.Name} are invalid: {data.RingColor}");
                         }
                     }
 

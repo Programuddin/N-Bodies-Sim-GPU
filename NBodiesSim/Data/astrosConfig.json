@@ -27,7 +27,7 @@
     {
       "KeyName": "0",
       "Key": 48,
-      "Name": "Sol",
+      "Name": "Sun",
       "Id": 0,
       "TargetDistanceScale": 1e9,
       "TargetRadiusScale": 1e6,
@@ -39,7 +39,7 @@
     {
       "KeyName": "1",
       "Key": 49,
-      "Name": "Mercurio",
+      "Name": "Mercury",
       "Id": 1,
       "TargetDistanceScale": 2e7,
       "TargetRadiusScale": 8e4,
@@ -63,7 +63,7 @@
     {
       "KeyName": "3",
       "Key": 51,
-      "Name": "Tierra",
+      "Name": "Earth",
       "Id": 3,
       "TargetDistanceScale": 2e6,
       "TargetRadiusScale": 8e4,
@@ -75,7 +75,7 @@
     {
       "KeyName": "4",
       "Key": 52,
-      "Name": "Marte",
+      "Name": "Mars",
       "Id": 4,
       "TargetDistanceScale": 2e5,
       "TargetRadiusScale": 8e4,
@@ -87,7 +87,7 @@
     {
       "KeyName": "5",
       "Key": 53,
-      "Name": "Júpiter",
+      "Name": "Jupiter",
       "Id": 5,
       "TargetDistanceScale": 4e6,
       "TargetRadiusScale": 8e4,
@@ -99,7 +99,7 @@
     {
       "KeyName": "6",
       "Key": 54,
-      "Name": "Saturno",
+      "Name": "Saturn",
       "Id": 6,
       "TargetDistanceScale": 5e6,
       "TargetRadiusScale": 4e6,
@@ -111,7 +111,7 @@
     {
       "KeyName": "7",
       "Key": 55,
-      "Name": "Urano",
+      "Name": "Uranus",
       "Id": 7,
       "TargetDistanceScale": 2e6,
       "TargetRadiusScale": 2e6,
@@ -123,7 +123,7 @@
     {
       "KeyName": "8",
       "Key": 56,
-      "Name": "Neptuno",
+      "Name": "Neptune",
       "Id": 8,
       "TargetDistanceScale": 1e6,
       "TargetRadiusScale": 6.15e5,
@@ -135,7 +135,7 @@
     {
       "KeyName": "9",
       "Key": 57,
-      "Name": "Plutón",
+      "Name": "Pluto",
       "Id": 200,
       "TargetDistanceScale": 1e5,
       "TargetRadiusScale": 1e4,

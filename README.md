@@ -12,6 +12,7 @@ NBodiesSim simulates the gravitational interactions between celestial bodies in 
 - **Full N-body Simulation**: All celestial bodies interact gravitationally with each other
 - **Real Solar System Data**: Initial conditions based on actual planetary positions and velocities
 - **Multiple Camera Views**: Focus on any planet to see its satellites and rings
+- **Per-Body HUD**: Dynamic panel showing mass, velocity, position and radius of the selected body, with satellite data
 - **Smooth Camera Transitions**: Interpolated camera movement between different viewpoints
 - **Orbital Trails**: Visualize the path of celestial bodies over time
 - **Planetary Rings**: Saturn, Uranus, and Neptune rendered with their characteristic rings
@@ -56,6 +57,11 @@ NBodiesSim simulates the gravitational interactions between celestial bodies in 
 | **6** | Focus on Saturn |
 | **7** | Focus on Uranus |
 | **8** | Focus on Neptune |
+| **9** | Easter Egg |
+| **F1** | Toggle help menu |
+| **T** | Toggle simulated time display |
+| **E** | Toggle energy conservation display |
+| **H** | Toggle body HUD (with satellite data) |
 | **Esc** | Exit simulation |
 
 ## 🔧 Requirements
@@ -169,7 +175,7 @@ Defines properties for each celestial body:
 ```json
 {
   "id": 0,
-  "name": "Sol",
+  "name": "Sun",
   "mass": 1.989e30,
   "radius": 696340000,
   "position": [0, 0],
@@ -230,9 +236,8 @@ Defines camera behavior for each viewpoint:
 ### Key Components
 
 1. **PhysicsEngineRK4**: Implements RK4 physics engine
-   - `CalcAccelerations()`: Computes gravitational forces (O(n²))
-   - `CalculateK1/K2/K3/K4()`: Four RK4 evaluation stages
-   - `UpdateRk4()`: Main physics update loop
+   - `CalcAccelerations()`: Computes gravitational forces using G*rij/r^3 (O(n²))
+   - `UpdateRk4()`: Main physics update loop with inline K1-K4 stages and pre-allocated arrays
    - `CalculateEnergy()`: Monitors energy conservation with cumulative error tracking
 
 2. **RenderSystem**: Handles all visualization
@@ -256,7 +261,7 @@ Defines camera behavior for each viewpoint:
 
 ### Optimizations
 
-- **Array Reuse**: Temporary arrays (`hypotheticalPos`, `hypotheticalVel`) created once per timestep, not per K-evaluation
+- **Pre-Allocated Arrays**: All RK4 intermediate arrays pre-allocated as class fields, eliminating per-frame GC pressure
 - **Batch Rendering**: Stars and orbital trails rendered using Raylib's batching system for optimal GPU performance
 - **Spatial Culling**: Off-screen objects skipped during rendering
 - **Fixed Timestep**: Predictable physics regardless of hardware
@@ -275,8 +280,8 @@ Defines camera behavior for each viewpoint:
 
 Planned features (as documented in `Program.cs`):
 
-- [ ] **F1 Help Menu**: Initial usage guide accessible in-app
-- [ ] **Planet-Specific HUD**: Dynamic information panels showing characteristics, satellites, velocities
+- [x] **F1 Help Menu**: Initial usage guide accessible in-app
+- [x] **Planet-Specific HUD**: Dynamic information panels showing characteristics, satellites, velocities
 - [ ] **Solar System Barycenter**: Center orbital calculations on the system's center of mass
 - [ ] **NASA API Integration**: Load real positions and velocities for any chosen date
 - [ ] **State Persistence**: Save/load simulation snapshots

@@ -1,7 +1,7 @@
 name: Build Multi-Platform Release
 
 on:
-  workflow_dispatch: # Activación manual desde GitHub Actions
+  workflow_dispatch: # Manual trigger from GitHub Actions
 
 jobs:
   build:
@@ -58,47 +58,47 @@ jobs:
           N-Bodies Simulator - Solar System
           ========================================
 
-          INSTRUCCIONES:
+          INSTRUCTIONS:
 
-          1. Asegúrate de que la carpeta "Data" está en el mismo directorio que el ejecutable
-          2. Ejecuta el programa:
-             - Windows: Doble clic en NBodiesSim.exe
-             - Linux/macOS: ./NBodiesSim (puede requerir: chmod +x NBodiesSim)
+          1. Make sure the "Data" folder is in the same directory as the executable
+          2. Run the program:
+             - Windows: Double-click NBodiesSim.exe
+             - Linux/macOS: ./NBodiesSim (may require: chmod +x NBodiesSim)
 
-          CONTROLES:
+          CONTROLS:
 
-          - ESPACIO: Vista general del sistema solar
-          - 0-9: Seleccionar planeta/astro
-          - F1: Menú de ayuda
-          - T: Menú de tiempo simulado
-          - E: Menú de conservación de energía
-          - H: HUD del planeta seleccionado (con datos de satélites si los tiene)
-          - ESC: Salir
+          - SPACE: Wide view of the Solar System
+          - 0-9: Select planet/body
+          - F1: Help menu
+          - T: Simulated time menu
+          - E: Energy conservation menu
+          - H: Selected body HUD (with satellite data if available)
+          - ESC: Exit
 
-          NOTA: Los archivos Data/astrosData.json y Data/astrosConfig.json contienen las posiciones,
-          velocidades iniciales y configuraciones de todos los cuerpos celestes. Puedes editarlos
-          para modificar la simulación.
+          NOTE: The files Data/astrosData.json and Data/astrosConfig.json contain the positions,
+          initial velocities, and configurations for all celestial bodies. You can edit them
+          to modify the simulation.
 
-          Timesteps usados (n = substeps de integración RK4):
-          - Vista general: 12 horas (43200s), n=300
-          - Sol: 12 horas (43200s), n=300
-          - Mercurio: 1 hora (3600s), n=300
-          - Venus: 1 hora (3600s), n=300
-          - Tierra: 1 hora (3600s), n=300
-          - Marte: 400 segundos (~7 min), n=300
-          - Júpiter: 30 minutos (1800s), n=300
-          - Saturno: 30 minutos (1800s), n=300
-          - Urano: 1 hora (3600s), n=300
-          - Neptuno: 1 hora (3600s), n=300
-          - Plutón: 30 minutos (1800s), n=300
+          Timesteps used (n = RK4 integration substeps):
+          - Wide view: 12 hours (43200s), n=300
+          - Sun: 12 hours (43200s), n=300
+          - Mercury: 1 hour (3600s), n=300
+          - Venus: 1 hour (3600s), n=300
+          - Earth: 1 hour (3600s), n=300
+          - Mars: 400 seconds (~7 min), n=300
+          - Jupiter: 30 minutes (1800s), n=300
+          - Saturn: 30 minutes (1800s), n=300
+          - Uranus: 1 hour (3600s), n=300
+          - Neptune: 1 hour (3600s), n=300
+          - Pluto: 30 minutes (1800s), n=300
 
-          MEJORAS RECIENTES:
-          - HUD por planeta: muestra masa, velocidad, posición y radio del cuerpo seleccionado
-          - HUD de satélites: panel condicional con datos de cada satélite del planeta
-          - Motor de física optimizado: arrays pre-asignados, cálculos RK4 inline
-          - Optimización matemática: G*rij/r³ reduce llamadas a sqrt
-          - IDs de tipo entero en todo el proyecto (preparado para integración con NASA JPL)
-          - Limpieza de código: métodos no usados eliminados, variables temporales optimizadas
+          RECENT IMPROVEMENTS:
+          - Per-body HUD: displays mass, velocity, position and radius of the selected body
+          - Satellite HUD: conditional panel with data for each satellite
+          - Optimized physics engine: pre-allocated arrays, inline RK4 calculations
+          - Math optimization: G*rij/r^3 reduces sqrt calls
+          - Integer IDs across the project (prepared for NASA JPL integration)
+          - Code cleanup: unused methods removed, temporary variables optimized
 
           ========================================
           EOF
@@ -142,82 +142,82 @@ jobs:
           cat > RELEASE_NOTES.md << 'EOF'
           # N-Bodies Simulator - Solar System
 
-          Simulación gravitatoria N-cuerpos del Sistema Solar con física realista.
+          Realistic N-body gravitational simulation of the Solar System.
 
-          ## 📦 Descargas
+          ## 📦 Downloads
 
-          Descarga el archivo correspondiente a tu sistema operativo:
+          Download the file for your operating system:
 
           - **Windows**: `NBodiesSim-windows.zip`
           - **Linux**: `NBodiesSim-linux.zip`
           - **macOS**: `NBodiesSim-macos.zip`
 
-          ## 🚀 Instalación
+          ## 🚀 Installation
 
           ### Windows
-          1. Descarga y extrae el ZIP
-          2. Ejecuta `NBodiesSim.exe`
+          1. Download and extract the ZIP
+          2. Run `NBodiesSim.exe`
 
           ### Linux
-          1. Descarga y extrae: `unzip NBodiesSim-linux.zip`
-          2. Da permisos: `chmod +x NBodiesSim`
-          3. Ejecuta: `./NBodiesSim`
+          1. Download and extract: `unzip NBodiesSim-linux.zip`
+          2. Grant permissions: `chmod +x NBodiesSim`
+          3. Run: `./NBodiesSim`
 
           ### macOS
-          1. Descarga y extrae el ZIP
-          2. Da permisos: `chmod +x NBodiesSim`
-          3. Ejecuta: `./NBodiesSim`
-          4. Si macOS bloquea: Preferencias del Sistema > Privacidad y Seguridad > "Abrir de todas formas"
+          1. Download and extract the ZIP
+          2. Grant permissions: `chmod +x NBodiesSim`
+          3. Run: `./NBodiesSim`
+          4. If macOS blocks it: System Preferences > Privacy & Security > "Open Anyway"
 
-          ## 🎮 Controles
+          ## 🎮 Controls
 
-          - **ESPACIO**: Vista general del sistema solar
-          - **0-9**: Seleccionar planeta (0=Sol, 1=Mercurio, 2=Venus, etc.)
-          - **F1**: Menú de ayuda
-          - **T**: Menú de tiempo simulado
-          - **E**: Menú de conservación de energía
-          - **H**: HUD del planeta seleccionado (con datos de satélites si los tiene)
-          - **ESC**: Salir
+          - **SPACE**: Wide view of the Solar System
+          - **0-9**: Select planet (0=Sun, 1=Mercury, 2=Venus, etc.)
+          - **F1**: Help menu
+          - **T**: Simulated time menu
+          - **E**: Energy conservation menu
+          - **H**: Selected body HUD (with satellite data if available)
+          - **ESC**: Exit
 
-          ## ⚙️ Características
+          ## ⚙️ Features
 
-          ### Simulación
-          - 8 planetas + Sol + Plutón
-          - 13+ satélites naturales (Luna, Galileanos, Titán, etc.)
-          - Física gravitatoria N-cuerpos completa con Runge-Kutta 4 (RK4)
-          - Motor de física optimizado: arrays pre-asignados, cálculos RK4 inline
-          - Timesteps adaptativos según el cuerpo observado
-          - Estabilidad validada durante 1,765+ años simulados
-          - Conservación de energía: error acumulado ±1.89e-7
+          ### Simulation
+          - 8 planets + Sun + Pluto
+          - 13+ natural satellites (Moon, Galilean moons, Titan, etc.)
+          - Full N-body gravitational physics with Runge-Kutta 4 (RK4)
+          - Optimized physics engine: pre-allocated arrays, inline RK4 calculations
+          - Adaptive timesteps based on the observed body
+          - Stability validated over 1,765+ simulated years
+          - Energy conservation: accumulated error ±1.89e-7
 
-          ### Interfaz
-          - HUD por planeta: masa, velocidad, posición y radio
-          - HUD de satélites: panel condicional con datos de cada satélite
-          - Menú de ayuda (F1), tiempo simulado (T) y conservación de energía (E)
-          - Anillos planetarios (Saturno, Urano, Neptuno)
-          - Cinturón de asteroides y cinturón de Kuiper
-          - Trazas orbitales con gradiente de transparencia
-          - 10,000 estrellas de fondo generadas proceduralmente
-          - 60 FPS estables incluso después de horas
+          ### Interface
+          - Per-body HUD: mass, velocity, position and radius
+          - Satellite HUD: conditional panel with data for each satellite
+          - Help menu (F1), simulated time (T) and energy conservation (E)
+          - Planetary rings (Saturn, Uranus, Neptune)
+          - Asteroid belt and Kuiper belt
+          - Orbital trails with transparency gradient
+          - 10,000 procedurally generated background stars
+          - Stable 60 FPS even after hours of simulation
 
-          ## ⚠️ Limitaciones Conocidas
+          ## ⚠️ Known Limitations
 
-          - **Decay orbital lento**: Fobos muestra decaimiento de ~69 m/año por acumulación numérica
-          - **Causa**: Errores numéricos + condiciones iniciales no realistas (cuerpos alineados)
-          - **Impacto**: Mínimo - tomaría ~47,000 años simulados para efectos significativos
-          - **Mitigación futura**: Integración con datos reales de NASA JPL Horizons eliminará este artefacto
+          - **Slow orbital decay**: Phobos shows ~69 m/year decay due to numerical accumulation
+          - **Cause**: Numerical errors + unrealistic initial conditions (aligned bodies)
+          - **Impact**: Minimal - would take ~47,000 simulated years for significant effects
+          - **Future mitigation**: Integration with real NASA JPL Horizons data will eliminate this artifact
 
-          ## 📋 Requisitos
+          ## 📋 Requirements
 
           - **Windows**: Windows 10/11 (64-bit)
-          - **Linux**: GLIBC 2.31+ y drivers OpenGL
-          - **macOS**: macOS 10.15+ (Catalina o superior)
+          - **Linux**: GLIBC 2.31+ and OpenGL drivers
+          - **macOS**: macOS 10.15+ (Catalina or later)
 
-          ## 📝 Notas
+          ## 📝 Notes
 
-          - Cada ejecutable incluye el runtime de .NET (~70 MB)
-          - No requiere instalación de dependencias
-          - Los archivos `Data/astrosData.json` y `Data/astrosConfig.json` contienen los parámetros orbitales y configuraciones de cámara
+          - Each executable includes the .NET runtime (~70 MB)
+          - No dependency installation required
+          - The files `Data/astrosData.json` and `Data/astrosConfig.json` contain the orbital parameters and camera configurations
           EOF
 
       - name: Create Release

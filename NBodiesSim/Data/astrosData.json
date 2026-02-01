@@ -64,7 +64,7 @@
     {
       "Id": 41,
       "ParentId": 4,
-      "Name": "Fobos",
+      "Name": "Phobos",
       "Mass": 1.0659e16,
       "Radius": 1.1267e4,
       "Color": [160, 160, 160, 255],
@@ -72,7 +72,7 @@
       "Velocity": [0, 26229],
       "DesiredTrailTime": 0,
       "Theta": 0,
-      "OmegaMedia": 0.000228095,
+      "MeanOmega": 0.000228095,
       "OrbitalRadius": 9.4e6
     },
     {
@@ -86,7 +86,7 @@
       "Velocity": [0, 25450],
       "DesiredTrailTime": 0,
       "Theta": 0,
-      "OmegaMedia": 0.000057596,
+      "MeanOmega": 0.000057596,
       "OrbitalRadius": 2.34e7
     },
     {
@@ -124,7 +124,7 @@
     {
       "Id": 53,
       "ParentId": 5,
-      "Name": "Ganimedes",
+      "Name": "Ganymede",
       "Mass": 1.4819e23,
       "Radius": 2.6341e6,
       "Color": [190, 190, 190, 255],
@@ -135,7 +135,7 @@
     {
       "Id": 54,
       "ParentId": 5,
-      "Name": "Calisto",
+      "Name": "Callisto",
       "Mass": 1.0759e23,
       "Radius": 2.4103e6,
       "Color": [139, 137, 137, 255],
@@ -171,7 +171,7 @@
     {
       "Id": 62,
       "ParentId": 6,
-      "Name": "Rea",
+      "Name": "Rhea",
       "Mass": 2.3065e21,
       "Radius": 7.6382e5,
       "Color": [200, 200, 200, 255],
@@ -182,7 +182,7 @@
     {
       "Id": 63,
       "ParentId": 6,
-      "Name": "Encelado",
+      "Name": "Enceladus",
       "Mass": 1.08e20,
       "Radius": 2.521e5,
       "Color": [240, 248, 255, 255],
@@ -304,7 +304,7 @@
     {
       "Id": 2001,
       "ParentId": 200,
-      "Name": "Caronte",
+      "Name": "Charon",
       "Mass": 1.586e21,
       "Radius": 6.06e5,
       "Color": [180, 180, 190, 255],
