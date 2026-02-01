@@ -69,6 +69,10 @@ jobs:
 
           - ESPACIO: Vista general del sistema solar
           - 0-9: Seleccionar planeta/astro
+          - F1: Menú de ayuda
+          - T: Menú de tiempo simulado
+          - E: Menú de conservación de energía
+          - H: HUD del planeta seleccionado (con datos de satélites si los tiene)
           - ESC: Salir
 
           NOTA: Los archivos Data/astrosData.json y Data/astrosConfig.json contienen las posiciones,
@@ -88,13 +92,13 @@ jobs:
           - Neptuno: 1 hora (3600s), n=300
           - Plutón: 30 minutos (1800s), n=300
 
-          MEJORAS RECIENTES (v1.3):
-          - Timestep optimizado: Reducido de 1 día a 12 horas en vistas generales
-          - Estabilidad a largo plazo: Simulación validada durante 1,765+ años simulados
-          - Precisión orbital mejorada: Errores <0.4% vs valores teóricos
-          - Conservación de energía: Error acumulado ±1.89×10⁻⁷ (excelente)
-          - Fobos estable: Órbita se mantiene entre 9.25-9.40 millones de metros
-          - Deimos ultra-estable: Variación de solo ±486 metros
+          MEJORAS RECIENTES:
+          - HUD por planeta: muestra masa, velocidad, posición y radio del cuerpo seleccionado
+          - HUD de satélites: panel condicional con datos de cada satélite del planeta
+          - Motor de física optimizado: arrays pre-asignados, cálculos RK4 inline
+          - Optimización matemática: G*rij/r³ reduce llamadas a sqrt
+          - IDs de tipo entero en todo el proyecto (preparado para integración con NASA JPL)
+          - Limpieza de código: métodos no usados eliminados, variables temporales optimizadas
 
           ========================================
           EOF
@@ -169,36 +173,32 @@ jobs:
 
           - **ESPACIO**: Vista general del sistema solar
           - **0-9**: Seleccionar planeta (0=Sol, 1=Mercurio, 2=Venus, etc.)
+          - **F1**: Menú de ayuda
+          - **T**: Menú de tiempo simulado
+          - **E**: Menú de conservación de energía
+          - **H**: HUD del planeta seleccionado (con datos de satélites si los tiene)
           - **ESC**: Salir
 
           ## ⚙️ Características
 
-          - ✅ 8 planetas + Sol + objetos del Cinturón de Kuiper
-          - ✅ 13+ satélites naturales (Luna, Galileanos, Titán, etc.)
-          - ✅ Física gravitatoria N-cuerpos completa con Runge-Kutta 4 (RK4)
-          - ✅ Anillos planetarios (Saturno, Urano, Neptuno)
-          - ✅ Cinturón de asteroides y cinturón de Kuiper
-          - ✅ Trazas orbitales optimizadas (1.5-3 órbitas) con gradiente de transparencia
-          - ✅ Timesteps adaptativos según el cuerpo observado
-          - ✅ Monitor de conservación de energía con error acumulado en tiempo real
-          - ✅ 10,000 estrellas de fondo generadas proceduralmente
-          - ✅ Rendimiento optimizado: 60 FPS estables incluso después de horas
+          ### Simulación
+          - 8 planetas + Sol + Plutón
+          - 13+ satélites naturales (Luna, Galileanos, Titán, etc.)
+          - Física gravitatoria N-cuerpos completa con Runge-Kutta 4 (RK4)
+          - Motor de física optimizado: arrays pre-asignados, cálculos RK4 inline
+          - Timesteps adaptativos según el cuerpo observado
+          - Estabilidad validada durante 1,765+ años simulados
+          - Conservación de energía: error acumulado ±1.89e-7
 
-          ## 🔥 Mejoras Recientes (v1.3)
-
-          ### Optimización de Timestep y Estabilidad a Largo Plazo
-          - **Timestep reducido**: De 1 día (86400s) a 12 horas (43200s) en vistas generales
-          - **Estabilidad dramática**: Simulación validada durante **1,765+ años simulados** sin colapsos
-          - **Mejora 3.7×**: Comparado con versión anterior (468 años antes de inestabilidad)
-          - **Fobos estable**: Órbita se mantiene entre 9.25-9.40 millones de metros
-          - **Deimos ultra-estable**: Variación orbital de solo ±486 metros en 1,765 años
-          - **Precisión orbital**: Velocidades orbitales <0.4% error vs teoría
-          - **Conservación de energía**: Error acumulado ±1.89×10⁻⁷ (excelente para simulación N-body)
-          - **Proyección caracterizada**: Fobos decae ~69 m/año (47,000 años hasta límite de Roche)
-
-          ### Versiones Anteriores
-          - **v1.2**: Corrección de posiciones de Fobos/Deimos, monitoreo de energía
-          - **v1.1**: Corrección crítica de trazas orbitales, optimización de rendimiento
+          ### Interfaz
+          - HUD por planeta: masa, velocidad, posición y radio
+          - HUD de satélites: panel condicional con datos de cada satélite
+          - Menú de ayuda (F1), tiempo simulado (T) y conservación de energía (E)
+          - Anillos planetarios (Saturno, Urano, Neptuno)
+          - Cinturón de asteroides y cinturón de Kuiper
+          - Trazas orbitales con gradiente de transparencia
+          - 10,000 estrellas de fondo generadas proceduralmente
+          - 60 FPS estables incluso después de horas
 
           ## ⚠️ Limitaciones Conocidas
 
