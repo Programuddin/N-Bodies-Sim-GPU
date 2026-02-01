@@ -16,10 +16,16 @@ internal class RenderSystem
     private int _energyDiffAccumulator;
     private (double _energy, double _energyDiff, double _energyDiffRel, double _accumulatedEnergyDiffRel) _diff = (0f, 0f, 0f, 0f);
     private double _timePassed;
-    internal bool HelpMenuActive = true;
+    internal bool HelpMenuActive = false;
     internal bool EnergyMenuActive = false;
     internal bool TimeMenuActive = false;
+    internal bool ShowBodyHud = false;
     private Astro? _sun;
+
+
+    private (string label, string? value)[] _astroData = [];
+
+    private List<(string label, string? value)[]> _satelliteData = [];
 
     // Get the Sun's radius on screen (in pixels)
     private static float GetSunRadius(Astro sun, double radiusScale)
@@ -632,6 +638,12 @@ internal class RenderSystem
             posY: contentStartY + lineHeight,
             fontSize: 20,
             color: Color.White);
+        Raylib.DrawText(
+            text: "Toggle Body HUD: H",
+            posX: rightSideX,
+            posY: contentStartY + 2 * lineHeight,
+            fontSize: 20,
+            color: Color.White);
     }
 
     private void EnergyMenu(Camera camera)
@@ -660,13 +672,32 @@ internal class RenderSystem
         }
     }
 
-    private void UpdateDisplayValues((double, double, double, double) lastEnergyCalc, double simulatedTime)
+    private void UpdateDisplayValues((double, double, double, double) lastEnergyCalc, double simulatedTime, Astro selectedAstro, List<Astro> astros)
     {
+        if (_energyDiffAccumulator >= Raylib.GetFPS())
+        {
+            _timePassed = simulatedTime / PhysicsConstants.TerrestialYear;
+            _diff = lastEnergyCalc;
+            _astroData = [
+                ("Name", selectedAstro.Name),
+                ("Mass", selectedAstro.Mass.ToString("E3") + " kg"),
+                ("Velocity", selectedAstro.Velocity.Length().ToString("E3") + " m/s"),
+                ("Position", selectedAstro.Position.Length().ToString("E3") + " m"),
+                ("Radius", selectedAstro.Radius.ToString("E3") + " m")
+            ];
+            _satelliteData.Clear();
+            foreach (Astro satellite in astros.Where(a => a.ParentId == selectedAstro.Id))
+            {
+                _satelliteData.Add(
+                [("Name", satellite.Name),
+                    ("Mass", satellite.Mass.ToString("E3") + " kg"),
+                    ("Velocity", satellite.Velocity.Length().ToString("E3") + " m/s"),
+                    ("Position", satellite.Position.Length().ToString("E3") + " m"),
+                    ("Radius", satellite.Radius.ToString("E3") + " m")]);
+            }
+            _energyDiffAccumulator = 0;
+        }
         _energyDiffAccumulator++;
-        if (_energyDiffAccumulator < Raylib.GetFPS()) return;
-        _timePassed = simulatedTime / PhysicsConstants.TerrestialYear;
-        _diff = lastEnergyCalc;
-        _energyDiffAccumulator = 0;
     }
 
     private void TimeMenu()
@@ -680,6 +711,59 @@ internal class RenderSystem
         );
     }
 
+    private void DrawHud(Camera camera)
+    {
+        const int margin = 20;
+        const int lineHeight = 50;
+        const int hudWidth = 400;
+        int hudHeight = _astroData.Length * lineHeight + 2 * margin;
+
+        int initialPosX = camera.Width - hudWidth - margin;
+        int initialPosY = camera.Height - hudHeight - margin;
+
+        Raylib.DrawRectangle(initialPosX, initialPosY, hudWidth, hudHeight, new Color(0, 0, 0, 200));
+        Raylib.DrawRectangleLines(initialPosX, initialPosY, hudWidth, hudHeight, Color.White);
+
+        for (int i = 0; i < _astroData.Length; i++)
+        {
+            Raylib.DrawText(
+                text: $"{_astroData[i].label}: {_astroData[i].value}",
+                posX: initialPosX + margin,
+                posY: initialPosY + i * lineHeight + margin,
+                fontSize: 20,
+                color: Color.White);
+        }
+
+        if (_satelliteData.Count == 0) return;
+        int satelliteHudHeight = (_satelliteData.Count * _satelliteData[0].Length) * lineHeight + margin;
+        int satelliteHudYStart = camera.Height - satelliteHudHeight - margin;
+        Raylib.DrawRectangle(margin, satelliteHudYStart, hudWidth, satelliteHudHeight, new Color(0, 0, 0, 200));
+        Raylib.DrawRectangleLines(margin, satelliteHudYStart, hudWidth, satelliteHudHeight, Color.White);
+
+        for(int i = 0; i < _satelliteData.Count; i++)
+        {
+            (string label, string? value)[] satData = _satelliteData[i];
+
+            int basePosY = satelliteHudYStart + margin + i * satData.Length * lineHeight;
+
+            if (i > 0)
+            {
+                int actualPosY = satelliteHudYStart + i * (satData.Length * lineHeight);
+                Raylib.DrawLine(2 * margin, actualPosY, hudWidth, actualPosY, Color.White);
+            }
+
+            for (int j = 0; j < satData.Length; j++)
+            {
+                Raylib.DrawText(
+                    text: $"{satData[j].label}: {satData[j].value}",
+                    posX: 2 * margin,
+                    posY: basePosY + j * lineHeight,
+                    fontSize: 20,
+                    color: Color.White);
+            }
+        }
+    }
+    
     public void Draw(
         List<Astro> astros,
         Camera camera,
@@ -692,7 +776,7 @@ internal class RenderSystem
         double simulatedTime
     )
     {
-        UpdateDisplayValues(lastEnergyCalc, simulatedTime);
+        UpdateDisplayValues(lastEnergyCalc, simulatedTime, selectedAstro, astros);
 
         Raylib.BeginDrawing();
         Raylib.ClearBackground(Color.Black);
@@ -723,6 +807,9 @@ internal class RenderSystem
 
         // Time menu
         if (TimeMenuActive) TimeMenu();
+
+        // Planet HUD
+        if (ShowBodyHud) DrawHud(camera);
 
         // Help menu
         if (HelpMenuActive) HelpMenu(camera, astros);

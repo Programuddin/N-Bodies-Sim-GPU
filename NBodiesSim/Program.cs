@@ -8,8 +8,7 @@
  * satellites as well as its rings, if it has them.
  *
  * **Pending simulator improvements**
- * - Initial usage guide, shown by pressing the F1 key
- * - Custom HUD for each planet, with information on characteristics, satellites, velocities, etc.
+ * - Add zoom with the mouse wheel
  * - Add the Solar System barycenter to base orbit calculations on it.
  * - Ability to load positions and velocities for a chosen date using NASA's API.
  * - Ability to save position states.

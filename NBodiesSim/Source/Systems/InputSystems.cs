@@ -37,6 +37,9 @@ internal class InputSystems
             case (int)KeyboardKey.T:
                 renderSystem.TimeMenuActive = !renderSystem.TimeMenuActive;
                 break;
+            case (int)KeyboardKey.H:
+                renderSystem.ShowBodyHud = !renderSystem.ShowBodyHud;
+                break;
         }
 
         return null;
