@@ -17,14 +17,28 @@ internal class InputSystems
         _cameraConfigs = cameraConfigs;
     }
 
-    public AstroConfig? ProcessInput()
+    public AstroConfig? ProcessInput(RenderSystem renderSystem)
     {
         // Set Camera
         int key = Raylib.GetKeyPressed();
-        if (key != (int)KeyboardKey.Null && _cameraConfigs.ContainsKey((KeyboardKey)key))
+        if (key != (int)KeyboardKey.Null && _cameraConfigs.TryGetValue((KeyboardKey)key, out AstroConfig config))
         {
-            return _cameraConfigs[(KeyboardKey)key];
+            return config;
         }
+
+        switch (key)
+        {
+            case (int)KeyboardKey.F1:
+                renderSystem.HelpMenuActive = !renderSystem.HelpMenuActive;
+                break;
+            case (int)KeyboardKey.E:
+                renderSystem.EnergyMenuActive = !renderSystem.EnergyMenuActive;
+                break;
+            case (int)KeyboardKey.T:
+                renderSystem.TimeMenuActive = !renderSystem.TimeMenuActive;
+                break;
+        }
+
         return null;
 
     }

@@ -16,6 +16,10 @@ internal class RenderSystem
     private int _energyDiffAccumulator;
     private (double _energy, double _energyDiff, double _energyDiffRel, double _accumulatedEnergyDiffRel) _diff = (0f, 0f, 0f, 0f);
     private double _timePassed;
+    internal bool HelpMenuActive = true;
+    internal bool EnergyMenuActive = false;
+    internal bool TimeMenuActive = false;
+    private Astro? _sun;
 
     // Get the Sun's radius on screen (in pixels)
     private static float GetSunRadius(Astro sun, double radiusScale)
@@ -98,7 +102,7 @@ internal class RenderSystem
         return (triangle, trianPos);
     }
 
-    public void SaveTrail(List<Astro> astros, double timeStep)
+    public static void SaveTrail(List<Astro> astros, double timeStep)
     {
         foreach (Astro astro in astros)
         {
@@ -173,7 +177,7 @@ internal class RenderSystem
         Rlgl.End();
     }
 
-    public static void DrawAstro(Astro astro, Vector2 screenPos, Camera camera, int textAlign)
+    private static void DrawAstro(Astro astro, Vector2 screenPos, Camera camera, int textAlign)
     {
         float radio = (float)(astro.Radius / camera.RadiusScale);
 
@@ -207,26 +211,21 @@ internal class RenderSystem
     {
         if (selectedAstro is { HasRings: true, RingColor: not null })
         {
-            // posPantalla of the current body
             Vector2 screenPos = camera.WorldToScreen(selectedAstro.Position);
 
-            // Factor to make rings look proportionally correct
             double ringScale = camera.DistanceScale * 0.8;
             float innerRadius = (float)(selectedAstro.InnerRingRadius / ringScale);
             float outerRadius = (float)(selectedAstro.OuterRingRadius / ringScale);
 
-            if (selectedAstro.RingColor != null)
-            {
-                Raylib.DrawRing(
-                    center: screenPos,
-                    innerRadius,
-                    outerRadius,
-                    startAngle: 0,
-                    endAngle: 360,
-                    segments: 50,
-                    selectedAstro.RingColor.Value
-                );
-            }
+            Raylib.DrawRing(
+                center: screenPos,
+                innerRadius,
+                outerRadius,
+                startAngle: 0,
+                endAngle: 360,
+                segments: 50,
+                selectedAstro.RingColor.Value
+            );
         }
     }
 
@@ -356,14 +355,9 @@ internal class RenderSystem
 
         if (fixedObj)
         {
-            // 1. Calculate smooth oscillation (Sine gives values between -1 and 1)
-            // Lower to * 3 so it's slow "breathing"
+            // Smooth oscillation (Sine gives values between -1 and 1)
             float oscilacion = (float)Math.Sin(Raylib.GetTime() * RenderConstants.CrossPulseSpeed);
-
-            // In the Draw function, when objBloqueado is true:
-            float expansion =
-                (float)Math.Sin(Raylib.GetTime() * RenderConstants.CrossPulseSpeed)
-                * RenderConstants.CrossExpansionAmplitude; // Oscillates +- 2 pixels
+            float expansion = oscilacion * RenderConstants.CrossExpansionAmplitude;
             float ladoFinal = crossSide + expansion;
 
             // 2. Convert range [-1, 1] to [0.2, 1.0] so it never fully disappears
@@ -385,8 +379,6 @@ internal class RenderSystem
             Raylib.DrawLineV(center + new Vector2(crossSide, 0), center + new Vector2(-crossSide, 0), colorCruz);
             Raylib.DrawLineV(center + new Vector2(0, crossSide), center + new Vector2(0, -crossSide), colorCruz);
         }
-
-        Raylib.EndDrawing();
     }
 
     private static void DrawStars(Camera camera, StarList stars)
@@ -434,29 +426,16 @@ internal class RenderSystem
         Rlgl.End();
     }
 
-    private void DrawInfoText(Camera camera, (double, double, double, double) lastEnergyCalc, double simulatedTime)
+    private void DrawInfoText(Camera camera)
     {
         Raylib.DrawText(
-            text: "N-Bodies Simulator | Press Escape (Esc) to exit ",
+            text: "N-Bodies Simulator | Press Escape (Esc) to exit | Press F1 to open Help Menu",
             posX: 10,
             posY: 10,
             fontSize: 20,
             color: Color.White
         );
-        Raylib.DrawText(
-            text: $"Simulated time: {_timePassed:F3} years",
-            posX: 10,
-            posY: 40,
-            fontSize: 20,
-            color: Color.White
-        );
-        Raylib.DrawText(
-            text: "Camera: 0 - Sun | 1 - Mercury | 2 - Venus | ··· | 8 - Neptune | Space: Full system view",
-            posX: 10,
-            posY: Raylib.GetRenderHeight() - 30,
-            fontSize: 20,
-            color: Color.White
-        );
+
         Raylib.DrawText(
             text: $"FPS {Raylib.GetFPS()}",
             posX: camera.Width - 200,
@@ -464,41 +443,6 @@ internal class RenderSystem
             fontSize: 20,
             color: Color.Green
         );
-        if (_energyDiffAccumulator >= Raylib.GetFPS())
-        {
-            _timePassed = simulatedTime / PhysicsConstants.TerrestialYear;
-            _diff = lastEnergyCalc;
-            _energyDiffAccumulator = 0;
-        }
-        Raylib.DrawText(
-            text: $"Energy = {_diff._energy:E3}",
-            posX: camera.Width - 300,
-            posY: 60,
-            fontSize: 20,
-            color: Color.White
-        );
-        Raylib.DrawText(
-            text: $"EnergyDiff = {_diff._energyDiff:E3}",
-            posX: camera.Width - 300,
-            posY: 90,
-            fontSize: 20,
-            color: Color.White
-        );
-        Raylib.DrawText(
-            text: $"EnergyDiffRel = {_diff._energyDiffRel:E3}",
-            posX: camera.Width - 300,
-            posY: 120,
-            fontSize: 20,
-            color: Color.White
-        );
-        Raylib.DrawText(
-            text: $"Accumulated EnergyDiffRel = {_diff._accumulatedEnergyDiffRel:E3}",
-            posX: camera.Width - 450,
-            posY: 150,
-            fontSize: 20,
-            color: Color.White
-        );
-        _energyDiffAccumulator++;
     }
 
     private static void DrawBodies(
@@ -511,10 +455,12 @@ internal class RenderSystem
         int textAlign
     )
     {
+        Rectangle screenBounds = new Rectangle(0, 0, camera.Width, camera.Height);
+
         foreach (Astro astro in astros)
         {
             // If it's a satellite and its parent planet is not selected, skip
-            if (astro.ParentId.HasValue && (astro.ParentId.Value - selectedAstro.Id) != 0)
+            if (astro.ParentId.HasValue && astro.ParentId.Value != selectedAstro.Id)
             {
                 continue;
             }
@@ -530,10 +476,6 @@ internal class RenderSystem
                 continue;
             }
 
-            // 1. Check if the body is outside the screen limits
-            // Create a rectangle with screen dimensions and check if the body collides with it
-
-            Rectangle screenBounds = new Rectangle(0, 0, camera.Width, camera.Height);
             bool onScreen = Raylib.CheckCollisionPointRec(screenPos, screenBounds);
 
             if (!onScreen)
@@ -558,16 +500,184 @@ internal class RenderSystem
         DrawKuiperBelt(sunPosScreen, camera);
     }
 
-    private static (float sunRadiusAtScale, Vector2 sunPosScreen) GetSun(List<Astro> astros, Camera camera)
+    private (float sunRadiusAtScale, Vector2 sunPosScreen) GetSun(List<Astro> astros, Camera camera)
     {
-        Astro sol = astros.First(static a => a.Id == 0);
+        _sun ??= astros.First(static a => a.Id == 0);
 
-        float sunRadiusAtScale = RenderSystem.GetSunRadius(sol, camera.RadiusScale);
-
-        // Calculate Sun's position on screen (in pixels)
-        Vector2 sunPosScreen = RenderSystem.GetSunPositionScreen(sol, camera);
+        float sunRadiusAtScale = GetSunRadius(_sun, camera.RadiusScale);
+        Vector2 sunPosScreen = GetSunPositionScreen(_sun, camera);
 
         return (sunRadiusAtScale, sunPosScreen);
+    }
+
+    private static void HelpMenu(Camera camera, List<Astro> astros)
+    {
+        Color backColor = new Color(0, 0, 0, 200);
+        // Rectangle dimensions
+        int initialPosX = (int)(camera.Width * 0.15);
+        int initialPosY = (int)(camera.Height * 0.15);
+        int menuWidth = camera.Width - 2 * initialPosX;
+        int menuHeight = camera.Height - 2 * initialPosY;
+
+        // Margin
+        const int margin = 30;
+
+        // Back rectangle for the help menu
+        Raylib.DrawRectangle(
+            posX: initialPosX,
+            posY: initialPosY,
+            width: menuWidth,
+            height: menuHeight,
+            color: backColor);
+
+        Raylib.DrawRectangleLines(
+            posX: initialPosX,
+            posY: initialPosY,
+            width: menuWidth,
+            height: menuHeight,
+            color: Color.White);
+
+        // Vertical line
+        Raylib.DrawLine(
+            startPosX: camera.Width / 2,
+            startPosY: initialPosY + 2 * margin,
+            endPosX: camera.Width / 2,
+            endPosY: menuHeight + initialPosY - 2 * margin,
+            color: Color.White);
+
+        // Title
+        const string title = "Controles del Simulador";
+        int titleWidth = Raylib.MeasureText(title, 20);
+        int posXCentered = (camera.Width - titleWidth) / 2 ;
+
+        Raylib.DrawText(
+            text: title,
+            posX: posXCentered,
+            posY: initialPosY + margin,
+            fontSize: 20,
+            color: Color.White);
+        const string exitHelp = "Press F1 to hide the Help Menu";
+        int exitHelpWidth = Raylib.MeasureText(exitHelp, 20);
+        int posXexitHelp = initialPosX + menuWidth - exitHelpWidth - 2 * margin;
+
+        Raylib.DrawText(
+            text: exitHelp,
+            posX: posXexitHelp,
+            posY: initialPosY + margin,
+            fontSize: 20,
+            color: Color.White);
+
+        // Layout constants
+        const int lineHeight = 50;
+        const int itemsPerColumn = 5;
+        int contentStartY = initialPosY + 3 * margin;
+
+        // --- Left side: planet keys ---
+        int leftColX = initialPosX + margin;
+        int rightColX = initialPosX + menuWidth / 4 + margin;
+
+        Raylib.DrawText(
+            text: "Keys to select the view:",
+            posX: leftColX,
+            posY: contentStartY,
+            fontSize: 20,
+            color: Color.White);
+
+        int astroStartY = contentStartY + lineHeight;
+
+        for (int i = 0; i < 9; i++)
+        {
+            Astro astro = astros.First(a => a.Id == i);
+            int col = i / itemsPerColumn;
+            int row = i % itemsPerColumn;
+            int posX = col == 0 ? leftColX : rightColX;
+            int posY = astroStartY + row * lineHeight;
+
+            Raylib.DrawText(
+                text: $"{astro.Id}: {astro.Name}",
+                posX: posX,
+                posY: posY,
+                fontSize: 20,
+                color: Color.White);
+        }
+
+        Raylib.DrawText(
+            text: "9: Easter Egg",
+            posX: rightColX,
+            posY: astroStartY + 4 * lineHeight,
+            fontSize: 20,
+            color: Color.White);
+
+        int nextY = astroStartY + itemsPerColumn * lineHeight;
+
+        Raylib.DrawText(
+            text: "Space: Wide View of the Solar System",
+            posX: leftColX,
+            posY: nextY,
+            fontSize: 20,
+            color: Color.White);
+
+        // --- Right side: contextual menus ---
+        int rightSideX = camera.Width / 2 + margin;
+
+        Raylib.DrawText(
+            text: "Toggle Time Menu: T",
+            posX: rightSideX,
+            posY: contentStartY,
+            fontSize: 20,
+            color: Color.White);
+        Raylib.DrawText(
+            text: "Toggle Energy Menu: E",
+            posX: rightSideX,
+            posY: contentStartY + lineHeight,
+            fontSize: 20,
+            color: Color.White);
+    }
+
+    private void EnergyMenu(Camera camera)
+    {
+        const int lineHeight = 30;
+        const int startY = 60;
+        int posX = camera.Width - 450;
+
+        string[] labels =
+        [
+            $"Energy = {_diff._energy:E3}",
+            $"EnergyDiff = {_diff._energyDiff:E3}",
+            $"EnergyDiffRel = {_diff._energyDiffRel:E3}",
+            $"Accumulated EnergyDiffRel = {_diff._accumulatedEnergyDiffRel:E3}"
+        ];
+
+        for (int i = 0; i < labels.Length; i++)
+        {
+            Raylib.DrawText(
+                text: labels[i],
+                posX: posX,
+                posY: startY + i * lineHeight,
+                fontSize: 20,
+                color: Color.White
+            );
+        }
+    }
+
+    private void UpdateDisplayValues((double, double, double, double) lastEnergyCalc, double simulatedTime)
+    {
+        _energyDiffAccumulator++;
+        if (_energyDiffAccumulator < Raylib.GetFPS()) return;
+        _timePassed = simulatedTime / PhysicsConstants.TerrestialYear;
+        _diff = lastEnergyCalc;
+        _energyDiffAccumulator = 0;
+    }
+
+    private void TimeMenu()
+    {
+        Raylib.DrawText(
+            text: $"Simulated time: {_timePassed:F3} years",
+            posX: 10,
+            posY: 40,
+            fontSize: 20,
+            color: Color.White
+        );
     }
 
     public void Draw(
@@ -578,11 +688,12 @@ internal class RenderSystem
         int textAlign,
         StarList stars,
         string keyName,
-        PhysicsEngineRk4 physicsEngine,
         (double, double, double, double) lastEnergyCalc,
         double simulatedTime
     )
     {
+        UpdateDisplayValues(lastEnergyCalc, simulatedTime);
+
         Raylib.BeginDrawing();
         Raylib.ClearBackground(Color.Black);
 
@@ -590,7 +701,7 @@ internal class RenderSystem
         DrawStars(camera, stars);
 
         // Draw Text info
-        DrawInfoText(camera, lastEnergyCalc, simulatedTime);
+        DrawInfoText(camera);
 
         // Calculate sun radius and position in Screen before drawing objects
         (float sunRadiusAtScale, Vector2 sunPosScreen) = GetSun(astros, camera);
@@ -606,5 +717,16 @@ internal class RenderSystem
 
         // Satellite Cross
         DrawCross(crossSideLength, selectedAstro, camera);
+
+        // Energy menu
+        if (EnergyMenuActive) EnergyMenu(camera);
+
+        // Time menu
+        if (TimeMenuActive) TimeMenu();
+
+        // Help menu
+        if (HelpMenuActive) HelpMenu(camera, astros);
+
+        Raylib.EndDrawing();
     }
 }

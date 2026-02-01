@@ -14,9 +14,9 @@ public class Astro
     // Fixed variables
     public required string Name { get; init; }
 
-    public required float Id { get; init; }
+    public required int Id { get; init; }
 
-    public float? ParentId { get; init; }
+    public int? ParentId { get; init; }
 
     [Range(0.0001, double.MaxValue, ErrorMessage = "Mass must be greater than 0")]
     public required double Mass { get; init; }

@@ -15,7 +15,7 @@
     {
       "KeyName": "Space",
       "Key": 32,
-      "Name": "Vista amplia del sistema",
+      "Name": "Wide view of the Solar System",
       "Id": 0,
       "TargetDistanceScale": 1.5e10,
       "TargetRadiusScale": 8e7,

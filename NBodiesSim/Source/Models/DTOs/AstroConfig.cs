@@ -14,7 +14,7 @@ internal readonly struct AstroConfig
 
     public required string KeyName { get; init; }
 
-    public required float Id { get; init; }
+    public required int Id { get; init; }
 
     public required int TextAlign { get; init; }
 
@@ -24,7 +24,7 @@ internal readonly struct AstroConfig
 
     public required double TargetTimeStep { get; init; }
 
-    public required double TargetN { get; init; }
+    public required int TargetN { get; init; }
 
     public required double InitialLerpSpeed { get; init; }
 }

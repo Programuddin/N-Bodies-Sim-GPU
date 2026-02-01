@@ -24,7 +24,7 @@ internal class Camera
     // as well as changes in the chosen body.
     public double TargetDistanceScale { get; set; } = CameraConstants.DefaultDistanceScale;
     public double TargetRadiusScale { get; set; } = CameraConstants.DefaultRadiusScale;
-    public float TargetId { get; set; } // ID of the body to follow
+    public int TargetId { get; set; } // ID of the body to follow
 
     // Interpolation configuration
     private double LerpSpeed { get; set; } = CameraConstants.InitialLerpSpeed;

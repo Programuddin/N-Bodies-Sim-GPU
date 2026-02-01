@@ -47,7 +47,7 @@ internal class DataLoader
                 // If it's a satellite, inherit DesiredTrailTime from its parent planet
                 if (data.ParentId != null)
                 {
-                    AstroData? parentData = wrapperAstroData.Astros.FirstOrDefault(p => (p.Id - data.ParentId) == 0);
+                    AstroData? parentData = wrapperAstroData.Astros.FirstOrDefault(p => p.Id == data.ParentId);
                     if (parentData != null) desiredTrailTime = parentData.DesiredTrailTime;
                 }
 

@@ -2,7 +2,7 @@
   "Astros": [
     {
       "Id": 0,
-      "Name": "Sol",
+      "Name": "Sun",
       "Mass": 1.989e30,
       "Radius": 6.9634e8,
       "Color": [253, 249, 0, 255],
@@ -12,7 +12,7 @@
     },
     {
       "Id": 1,
-      "Name": "Mercurio",
+      "Name": "Mercury",
       "Mass": 3.285e23,
       "Radius": 2.44e6,
       "Color": [255, 0, 0, 255],
@@ -32,7 +32,7 @@
     },
     {
       "Id": 3,
-      "Name": "Tierra",
+      "Name": "Earth",
       "Mass": 5.972e24,
       "Radius": 6.375e6,
       "Color": [0, 121, 241, 255],
@@ -41,9 +41,9 @@
       "DesiredTrailTime": 94247781
     },
     {
-      "Id": 3.1,
+      "Id": 31,
       "ParentId": 3,
-      "Name": "Luna",
+      "Name": "Moon",
       "Mass": 7.342e22,
       "Radius": 1.737e6,
       "Color": [200, 200, 200, 255],
@@ -53,7 +53,7 @@
     },
     {
       "Id": 4,
-      "Name": "Marte",
+      "Name": "Mars",
       "Mass": 6.39e23,
       "Radius": 3.39e6,
       "Color": [255, 0, 0, 255],
@@ -62,7 +62,7 @@
       "DesiredTrailTime": 178104402
     },
     {
-      "Id": 4.1,
+      "Id": 41,
       "ParentId": 4,
       "Name": "Fobos",
       "Mass": 1.0659e16,
@@ -76,7 +76,7 @@
       "OrbitalRadius": 9.4e6
     },
     {
-      "Id": 4.2,
+      "Id": 42,
       "ParentId": 4,
       "Name": "Deimos",
       "Mass": 1.4762e15,
@@ -91,7 +91,7 @@
     },
     {
       "Id": 5,
-      "Name": "Júpiter",
+      "Name": "Jupiter",
       "Mass": 1.898e27,
       "Radius": 6.99e7,
       "Color": [165, 42, 42, 255],
@@ -100,9 +100,9 @@
       "DesiredTrailTime": 746644274
     },
     {
-      "Id": 5.1,
+      "Id": 51,
       "ParentId": 5,
-      "Name": "Ío",
+      "Name": "Io",
       "Mass": 8.9319e22,
       "Radius": 1.8216e6,
       "Color": [255, 215, 0, 255],
@@ -111,7 +111,7 @@
       "DesiredTrailTime": 0
     },
     {
-      "Id": 5.2,
+      "Id": 52,
       "ParentId": 5,
       "Name": "Europa",
       "Mass": 4.7998e22,
@@ -122,9 +122,9 @@
       "DesiredTrailTime": 0
     },
     {
-      "Id": 5.3,
+      "Id": 53,
       "ParentId": 5,
-      "Name": "Ganímedes",
+      "Name": "Ganimedes",
       "Mass": 1.4819e23,
       "Radius": 2.6341e6,
       "Color": [190, 190, 190, 255],
@@ -133,7 +133,7 @@
       "DesiredTrailTime": 0
     },
     {
-      "Id": 5.4,
+      "Id": 54,
       "ParentId": 5,
       "Name": "Calisto",
       "Mass": 1.0759e23,
@@ -145,7 +145,7 @@
     },
     {
       "Id": 6,
-      "Name": "Saturno",
+      "Name": "Saturn",
       "Mass": 5.683e26,
       "Radius": 5.82e7,
       "Color": [255, 203, 0, 255],
@@ -158,9 +158,9 @@
       "RingColor": [200, 180, 140, 25]
     },
     {
-      "Id": 6.1,
+      "Id": 61,
       "ParentId": 6,
-      "Name": "Titán",
+      "Name": "Titan",
       "Mass": 1.3452e23,
       "Radius": 2.5747e6,
       "Color": [255, 165, 79, 255],
@@ -169,7 +169,7 @@
       "DesiredTrailTime": 0
     },
     {
-      "Id": 6.2,
+      "Id": 62,
       "ParentId": 6,
       "Name": "Rea",
       "Mass": 2.3065e21,
@@ -180,9 +180,9 @@
       "DesiredTrailTime": 0
     },
     {
-      "Id": 6.3,
+      "Id": 63,
       "ParentId": 6,
-      "Name": "Encélado",
+      "Name": "Encelado",
       "Mass": 1.08e20,
       "Radius": 2.521e5,
       "Color": [240, 248, 255, 255],
@@ -192,7 +192,7 @@
     },
     {
       "Id": 7,
-      "Name": "Urano",
+      "Name": "Uranus",
       "Mass": 8.681e25,
       "Radius": 2.54e7,
       "Color": [135, 206, 235, 255],
@@ -205,7 +205,7 @@
       "RingColor": [220, 220, 240, 15]
     },
     {
-      "Id": 7.1,
+      "Id": 71,
       "ParentId": 7,
       "Name": "Titania",
       "Mass": 3.527e21,
@@ -216,9 +216,9 @@
       "DesiredTrailTime": 0
     },
     {
-      "Id": 7.2,
+      "Id": 72,
       "ParentId": 7,
-      "Name": "Oberón",
+      "Name": "Oberon",
       "Mass": 3.014e21,
       "Radius": 7.614e5,
       "Color": [190, 190, 190, 255],
@@ -228,7 +228,7 @@
     },
     {
       "Id": 8,
-      "Name": "Neptuno",
+      "Name": "Neptune",
       "Mass": 1.024e26,
       "Radius": 2.46e7,
       "Color": [0, 121, 241, 255],
@@ -241,9 +241,9 @@
       "RingColor": [150, 200, 255, 15]
     },
     {
-      "Id": 8.1,
+      "Id": 81,
       "ParentId": 8,
-      "Name": "Tritón",
+      "Name": "Triton",
       "Mass": 2.14e22,
       "Radius": 1.3534e6,
       "Color": [255, 192, 203, 255],
@@ -293,7 +293,7 @@
     },
     {
       "Id": 200,
-      "Name": "Plutón",
+      "Name": "Pluto",
       "Mass": 1.303e22,
       "Radius": 1.188e6,
       "Color": [200, 180, 160, 255],
@@ -302,7 +302,7 @@
       "DesiredTrailTime": 11920175816
     },
     {
-      "Id": 200.1,
+      "Id": 2001,
       "ParentId": 200,
       "Name": "Caronte",
       "Mass": 1.586e21,

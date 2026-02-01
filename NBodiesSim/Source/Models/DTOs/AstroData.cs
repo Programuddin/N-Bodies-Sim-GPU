@@ -6,9 +6,9 @@ namespace NBodiesSim.Source.Models.DTOs;
 
 internal class AstroData
 {
-    public required float Id { get; set; }
+    public required int Id { get; set; }
 
-    public float? ParentId { get; set; }
+    public int? ParentId { get; set; }
 
     public required string Name { get; set; }
 

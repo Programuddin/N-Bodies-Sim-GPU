@@ -35,12 +35,12 @@ public class SimulationLogger : IDisposable
     public void LogFrame(double simulatedTime, (double energy, double energyDiff, double energyDiffRel, double accumulatedEnergDiff) energyCalc)
     {
         // I create variables of every body being studied
-        Astro fobos = _astros.First(a => (a.Id == 4.1f));
-        Astro deimos = _astros.First(a => (a.Id == 4.2f));
-        Astro mars = _astros.First(a => (a.Id == 4f));
-        Astro jupiter = _astros.First(a => (a.Id == 5f));
-        Astro saturn = _astros.First(a => (a.Id == 6f));
-        Astro sun = _astros.First(a => (a.Id == 0f));
+        Astro fobos = _astros.First(a => a.Id == 41);
+        Astro deimos = _astros.First(a => a.Id == 42);
+        Astro mars = _astros.First(a => a.Id == 4);
+        Astro jupiter = _astros.First(a => a.Id == 5);
+        Astro saturn = _astros.First(a => a.Id == 6);
+        Astro sun = _astros.First(a => a.Id == 0);
 
         // I calculate distances
         double fobosDistToDeimos = (fobos.Position - deimos.Position).Length();
