@@ -1,0 +1,13 @@
+﻿  Compiling CUDA source file kernel.cu...
+  
+  C:\Users\Ibrahim\HakiGPUAssmt\N-Bodies-Sim-GPU\CudaPhysics>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v13.2\bin\nvcc.exe" -gencode=arch=compute_75,code=\"sm_75,compute_75\" --use-local-env -ccbin "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64" -x cu   -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v13.2\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v13.2\include"     --keep-dir x64\Release  -maxrregcount=0    --machine 64 --compile -cudart hybrid    -DNDEBUG -DCUDAPHYSICS_EXPORTS -D_WINDOWS -D_USRDLL -D_WINDLL -D_UNICODE -DUNICODE -Xcompiler "/EHsc /W3 /nologo /O2 /FS   /MD " -Xcompiler "/Fdx64\Release\vc145.pdb" -o C:\Users\Ibrahim\HakiGPUAssmt\N-Bodies-Sim-GPU\CudaPhysics\x64\Release\kernel.cu.obj "C:\Users\Ibrahim\HakiGPUAssmt\N-Bodies-Sim-GPU\CudaPhysics\kernel.cu" 
+  kernel.cu
+  tmpxft_00003c94_00000000-7_kernel.cudafe1.cpp
+  pch.cpp
+  dllmain.cpp
+     Creating library C:\Users\Ibrahim\HakiGPUAssmt\N-Bodies-Sim-GPU\NBodiesSim\bin\Release\net10.0\CudaPhysics.lib and object C:\Users\Ibrahim\HakiGPUAssmt\N-Bodies-Sim-GPU\NBodiesSim\bin\Release\net10.0\CudaPhysics.exp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 1 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  CudaPhysics.vcxproj -> C:\Users\Ibrahim\HakiGPUAssmt\N-Bodies-Sim-GPU\NBodiesSim\bin\Release\net10.0\CudaPhysics.dll

@@ -47,4 +47,24 @@ public class Astro
     public required Vector2D Velocity { get; set; }
 
     public required Vector2D Acceleration { get; set; }
+
+    public Astro Clone() => new Astro
+    {
+        Name = this.Name,
+        Id = this.Id,
+        ParentId = this.ParentId,
+        Mass = this.Mass,
+        Radius = this.Radius,
+        Color = this.Color,
+        HasRings = this.HasRings,
+        InnerRingRadius = this.InnerRingRadius,
+        OuterRingRadius = this.OuterRingRadius,
+        RingColor = this.RingColor,
+        Trail = new Queue<Vector2D>(this.Trail),
+        DesiredTrailTime = this.DesiredTrailTime,
+        Position = this.Position,
+        Velocity = this.Velocity,
+        Acceleration = this.Acceleration,
+    };
+
 }

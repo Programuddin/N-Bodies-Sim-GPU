@@ -29,6 +29,7 @@
  */
 using NBodiesSim.Source.Core;
 using NBodiesSim.Source.Models;
+using System.Runtime.InteropServices;
 
 namespace NBodiesSim.Source.Systems;
 
@@ -37,119 +38,50 @@ internal class PhysicsEngineRk4
     private double _energy;
     private double _initialEnergy;
 
-    // Pre-allocated arrays to avoid GC pressure
-    private Vector2D[] _initialPos = [];
-    private Vector2D[] _hypotheticalPos = [];
-    private Vector2D[] _acc = [];
-    private Vector2D[] _accK1 = [];
-    private Vector2D[] _accK2 = [];
-    private Vector2D[] _accK3 = [];
-    private Vector2D[] _accK4 = [];
-    private Vector2D[] _velK1 = [];
-    private Vector2D[] _velK2 = [];
-    private Vector2D[] _velK3 = [];
-    private Vector2D[] _velK4 = [];
+    [DllImport("CudaPhysics.dll", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void UpdatePhysicsCUDA(double[] posX, double[] posY, double[] velX, double[] velY, double[] mass, int numBodies, double dt, int subSteps);
+
+    [DllImport("CudaPhysics.dll", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void InitCudaMemory(int numBodies);
+
+
+    private double[] _posX = [];
+    private double[] _posY = [];
+    private double[] _velX = [];
+    private double[] _velY = [];
+    private double[] _mass = [];
 
     private void EnsureArraySizes(int count)
     {
-        if (_initialPos.Length == count) return;
-        _initialPos = new Vector2D[count];
-        _hypotheticalPos = new Vector2D[count];
-        _acc = new Vector2D[count];
-        _accK1 = new Vector2D[count];
-        _accK2 = new Vector2D[count];
-        _accK3 = new Vector2D[count];
-        _accK4 = new Vector2D[count];
-        _velK1 = new Vector2D[count];
-        _velK2 = new Vector2D[count];
-        _velK3 = new Vector2D[count];
-        _velK4 = new Vector2D[count];
+        if (_posX.Length == count) return;
+        _posX = new double[count];
+        _posY = new double[count];
+        _velX = new double[count];
+        _velY = new double[count];
+        _mass = new double[count];
+
+        InitCudaMemory(count);
     }
-
-    // Calculates accelerations from hypothPos and writes them into _acc
-    private void CalcAccelerations(List<Astro> astros, Vector2D[] hypothPos)
-    {
-        int count = astros.Count;
-        for (int i = 0; i < count; i++)
-        {
-            _acc[i] = Vector2D.Zero;
-        }
-
-        for (int i = 0; i < count - 1; i++)
-        {
-            for (int j = i + 1; j < count; j++)
-            {
-                Vector2D rij = hypothPos[j] - hypothPos[i];
-                double dist = rij.Length();
-                Vector2D acji = PhysicsConstants.G / (dist * dist * dist) * rij;
-                _acc[i] += acji * astros[j].Mass;
-                _acc[j] -= acji * astros[i].Mass;
-            }
-        }
-    }
-
-    public void UpdateRk4(List<Astro> astros, double dt)
+    public void UpdateRk4(List<Astro> astros, double dt, int subSteps)
     {
         int count = astros.Count;
         EnsureArraySizes(count);
 
-        double halfDt = dt / 2;
-
-        // Copy initial positions
         for (int i = 0; i < count; i++)
         {
-            _initialPos[i] = astros[i].Position;
+            _posX[i] = astros[i].Position.X;
+            _posY[i] = astros[i].Position.Y;
+            _velX[i] = astros[i].Velocity.X;
+            _velY[i] = astros[i].Velocity.Y;
+            _mass[i] = astros[i].Mass;
         }
 
-        // --- K1: evaluate at current state ---
-        CalcAccelerations(astros, _initialPos);
-        for (int i = 0; i < count; i++)
-        {
-            _accK1[i] = _acc[i];
-            _velK1[i] = astros[i].Velocity;
-        }
+        UpdatePhysicsCUDA(_posX, _posY, _velX, _velY, _mass, count, dt, subSteps);
 
-        // --- K2: evaluate at t + dt/2 using K1 ---
         for (int i = 0; i < count; i++)
         {
-            _hypotheticalPos[i] = astros[i].Position + _velK1[i] * halfDt;
-        }
-        CalcAccelerations(astros, _hypotheticalPos);
-        for (int i = 0; i < count; i++)
-        {
-            _accK2[i] = _acc[i];
-            _velK2[i] = astros[i].Velocity + _accK1[i] * halfDt;
-        }
-
-        // --- K3: evaluate at t + dt/2 using K2 ---
-        for (int i = 0; i < count; i++)
-        {
-            _hypotheticalPos[i] = astros[i].Position + _velK2[i] * halfDt;
-        }
-        CalcAccelerations(astros, _hypotheticalPos);
-        for (int i = 0; i < count; i++)
-        {
-            _accK3[i] = _acc[i];
-            _velK3[i] = astros[i].Velocity + _accK2[i] * halfDt;
-        }
-
-        // --- K4: evaluate at t + dt using K3 ---
-        for (int i = 0; i < count; i++)
-        {
-            _hypotheticalPos[i] = astros[i].Position + _velK3[i] * dt;
-        }
-        CalcAccelerations(astros, _hypotheticalPos);
-        for (int i = 0; i < count; i++)
-        {
-            _accK4[i] = _acc[i];
-            _velK4[i] = astros[i].Velocity + _accK3[i] * dt;
-        }
-
-        // --- Final RK4 weighted update ---
-        for (int i = 0; i < count; i++)
-        {
-            astros[i].Velocity += (_accK1[i] + 2 * _accK2[i] + 2 * _accK3[i] + _accK4[i]) * dt / 6;
-            astros[i].Position += (_velK1[i] + 2 * _velK2[i] + 2 * _velK3[i] + _velK4[i]) * dt / 6;
+            astros[i].Position = new Vector2D(_posX[i], _posY[i]);
+            astros[i].Velocity = new Vector2D(_velX[i], _velY[i]);
         }
     }
 

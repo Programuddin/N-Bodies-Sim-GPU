@@ -112,21 +112,18 @@ internal class RenderSystem
     {
         foreach (Astro astro in astros)
         {
-            // Save the position in the trail
             astro.Trail.Enqueue(astro.Position);
 
-            // Calculate how many points we need based on the current timeStep
             int effectiveTrailLength = (int)(astro.DesiredTrailTime / timeStep);
 
-            // Ensure a reasonable minimum
-            if (effectiveTrailLength < 1000)
-                effectiveTrailLength = 1000;
+            if (effectiveTrailLength < 100)
+                effectiveTrailLength = 100;
 
-            // Remove ALL excess points, not just one per frame
+            if (effectiveTrailLength > 100) 
+                effectiveTrailLength = 100;
+
             while (astro.Trail.Count > effectiveTrailLength)
-            {
                 astro.Trail.Dequeue();
-            }
         }
     }
 

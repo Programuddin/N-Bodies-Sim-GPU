@@ -27,8 +27,14 @@ internal class Simulation
   private double _simulatedTime;
   private (double, double, double, double) _lastEnergyCalc = (0, 0, 0, 0);
 
+    private Thread _physicsThread;
+    private volatile bool _running = true;
+    private readonly object _physicsLock = new object();
+    private List<(double x, double y, double vx, double vy)> _latestPositions = new();
+    private bool _physicsResultReady = false;
 
-  public Simulation(
+
+    public Simulation(
       PhysicsEngineRk4 physicsEngine,
       RenderSystem renderSystem,
       DataLoader dataLoader,
@@ -45,81 +51,91 @@ internal class Simulation
   {
 
     // 1. Create the Raylib window
-    Raylib.SetConfigFlags(ConfigFlags.FullscreenMode | ConfigFlags.Msaa4xHint);
+    Raylib.SetConfigFlags(ConfigFlags.Msaa4xHint);
     Raylib.InitWindow(_camera.Width, _camera.Height, "N-Bodies Simulator");
-    Raylib.SetTargetFPS(Raylib.GetMonitorRefreshRate(0));
 
     // Generate initial stars (only once)
     _stars.GenerateStars();
   }
 
-  public void Run()
-  {
-    List<Astro> astros = _dataLoader.Astros;
-    _selectedAstro = astros.First(a => a.Id == _camera.TargetId);
 
-    // Variables for the independent physics calculations
-    double accumulator = 0;
-
-    // Warm-up: run physics once to initialize PastPosition
-    _physicsEngine.UpdateRk4(astros, _subStep);
-
-    // 5. Main loop
-    while (!Raylib.WindowShouldClose())
+    public void Run()
     {
-      double dt = Raylib.GetFrameTime();
-      var newConfig = _inputSystems.ProcessInput(_renderSystem);
-      if (newConfig != null)
-      {
-        _camera.TargetId = newConfig.Value.Id;
-        _camera.TargetDistanceScale = newConfig.Value.TargetDistanceScale;
-        _camera.TargetRadiusScale = newConfig.Value.TargetRadiusScale;
-        _timeStep = newConfig.Value.TargetTimeStep;
-        _n = newConfig.Value.TargetN;
-        _subStep = _timeStep / _n;
-        _camera.ResetLerp();
-        _textAlign = newConfig.Value.TextAlign;
-        _keyName = newConfig.Value.KeyName;
-
-        // Update the current astro only when the target changes
+        List<Astro> astros = _dataLoader.Astros;
         _selectedAstro = astros.First(a => a.Id == _camera.TargetId);
-      }
 
-      // Physics: Once per frame, independent of FPS
-      accumulator += dt;
+        // Warm-up
+        _physicsEngine.UpdateRk4(astros, _subStep, 1);
 
-      while (accumulator >= SimulationConstants.FixedDt)
-      {
-        for (int i = 0; i < _n; i++)
+
+        _physicsThread = new Thread(() =>
         {
-          _physicsEngine.UpdateRk4(_dataLoader.Astros, _subStep);
-          _simulatedTime += _subStep;
+            while (_running)
+            {
+                List<Astro> workingCopy;
+                lock (_physicsLock)
+                {
+                    workingCopy = astros.Select(a => a.Clone()).ToList();
+                }
+
+                _physicsEngine.UpdateRk4(workingCopy, _timeStep, _n);
+
+                lock (_physicsLock)
+                {
+                    for (int i = 0; i < astros.Count; i++)
+                    {
+                        astros[i].Position = workingCopy[i].Position;
+                        astros[i].Velocity = workingCopy[i].Velocity;
+                    }
+                    RenderSystem.SaveTrail(astros, _timeStep);
+                    _simulatedTime += _timeStep;
+                    _lastEnergyCalc = _physicsEngine.CalculateEnergy(astros);
+                    _physicsResultReady = true;
+                }
+            }
+        });
+        _physicsThread.IsBackground = true;
+        _physicsThread.Start();
+
+        while (!Raylib.WindowShouldClose())
+        {
+            double dt = Raylib.GetFrameTime();
+            if (dt > 0.1) dt = 0.1;
+
+            var newConfig = _inputSystems.ProcessInput(_renderSystem);
+            if (newConfig != null)
+            {
+                _camera.TargetId = newConfig.Value.Id;
+                _camera.TargetDistanceScale = newConfig.Value.TargetDistanceScale;
+                _camera.TargetRadiusScale = newConfig.Value.TargetRadiusScale;
+                _timeStep = newConfig.Value.TargetTimeStep;
+                _n = newConfig.Value.TargetN;
+                _subStep = _timeStep / _n;
+                _camera.ResetLerp();
+                _textAlign = newConfig.Value.TextAlign;
+                _keyName = newConfig.Value.KeyName;
+            }
+
+            List<Astro> renderSnapshot;
+            double simTime;
+            lock (_physicsLock)
+            {
+                renderSnapshot = astros.Select(a => a.Clone()).ToList();
+                simTime = _simulatedTime;
+            }
+
+            _selectedAstro = renderSnapshot.First(a => a.Id == _camera.TargetId);
+            _camera.Update(dt, _selectedAstro.Position);
+
+            _renderSystem.Draw(
+                renderSnapshot, _camera, _selectedAstro,
+                SimulationConstants.CrossSideLength, _textAlign,
+                _stars, _keyName, _lastEnergyCalc, simTime
+            );
         }
-        (double, double, double, double) energyCalc = _physicsEngine.CalculateEnergy(_dataLoader.Astros);
-        _lastEnergyCalc = energyCalc;
 
-        accumulator -= SimulationConstants.FixedDt;
-      }
-
-            RenderSystem.SaveTrail(astros, _timeStep);
-
-      _camera.Update(dt, _selectedAstro.Position);
-
-
-
-      // Draw frame
-      _renderSystem.Draw(
-          astros,
-          _camera,
-          _selectedAstro,
-          SimulationConstants.CrossSideLength,
-          _textAlign,
-          _stars,
-          _keyName,
-          _lastEnergyCalc,
-          _simulatedTime
-      );
+        _running = false;
+        _physicsThread.Join();
+        Raylib.CloseWindow();
     }
-    Raylib.CloseWindow();
-  }
 }

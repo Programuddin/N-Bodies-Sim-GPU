@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Ibrahim\\HakiGPUAssmt\\N-Bodies-Sim-GPU\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4421E5C5-25D8-4386-8B32-1BD7F2369D1A}|NBodiesSim\\NBodiesSim.csproj|c:\\users\\ibrahim\\hakigpuassmt\\n-bodies-sim-gpu\\nbodiessim\\source\\models\\renderconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4421E5C5-25D8-4386-8B32-1BD7F2369D1A}|NBodiesSim\\NBodiesSim.csproj|solutionrelative:nbodiessim\\source\\models\\renderconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RenderConstants.cs",
+              "DocumentMoniker": "C:\\Users\\Ibrahim\\HakiGPUAssmt\\N-Bodies-Sim-GPU\\NBodiesSim\\Source\\Models\\RenderConstants.cs",
+              "RelativeDocumentMoniker": "NBodiesSim\\Source\\Models\\RenderConstants.cs",
+              "ToolTip": "C:\\Users\\Ibrahim\\HakiGPUAssmt\\N-Bodies-Sim-GPU\\NBodiesSim\\Source\\Models\\RenderConstants.cs",
+              "RelativeToolTip": "NBodiesSim\\Source\\Models\\RenderConstants.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-06T07:16:09.565Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
